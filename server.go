@@ -19,11 +19,11 @@ type User struct {
 }
 
 type NotifyUsers struct {
-	UserID sql.NullInt64
-	Name  sql.NullString
-	Email sql.NullString
-	PreferredTime sql.NullString
-	Surprise sql.NullString
+	UserID         sql.NullInt64
+	Name           sql.NullString
+	Email          sql.NullString
+	PreferredTime  sql.NullString
+	Surprise       sql.NullString
 	NotificationID sql.NullInt64
 }
 
@@ -56,7 +56,6 @@ func queryUsers(db *sql.DB) {
 	}
 }
 
-
 func main() {
 	// Connect to the database
 	url := os.Getenv("DATABASE_URL")
@@ -75,6 +74,7 @@ func main() {
 		queryUsers(db)
 	})
 	r.POST("/configuration", controllers.UpdateConfiguration)
+	r.POST("/update", controllers.ManageUser)
 	// Start the server
 	r.Run(":8080")
 }

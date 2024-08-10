@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"database/sql"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	utils "notifyy.app/backend/utils"
 )
 
 
@@ -13,13 +13,20 @@ type UpdateBody  struct{
 	Surprise bool `json:"surprise"`
 }
 
-func UpdatePreferredTime(db *sql.DB, userID int, newPreferredTime string) error {
+func UpdateDetails(userID string, newPreferredTime string,newSurprises bool) error {
+	var surprise int
+	if newSurprises{
+		surprise=1;
+	}else{
+		surprise=0;
+	}
+	db := utils.DBConnection()
     query := `
         UPDATE NotifyUsers 
-        SET PreferredTime = ? 
+        SET PreferredTime = ?, Surprises = ?
         WHERE UserID = ?
     `
-    _, err := db.Exec(query, newPreferredTime, userID)
+    _, err := db.Exec(query, newPreferredTime,surprise, userID)
     if err != nil {
         return err
     }
@@ -32,6 +39,13 @@ func UpdateConfiguration(c *gin.Context) {
 	if err := c.BindJSON(&requestBody); err != nil {
 		c.JSON(400, gin.H{
 			"error": "Invalid request body",
+		})
+		fmt.Printf("Error: %v", err)
+		return
+	}
+	if err:=UpdateDetails("1", requestBody.Alarm,requestBody.Surprise);err!=nil{
+		c.JSON(500, gin.H{
+			"error": "Internal Server Error",
 		})
 		fmt.Printf("Error: %v", err)
 		return

@@ -1,4 +1,4 @@
-package db
+package dbtype
 
 import "database/sql"
 
@@ -10,7 +10,7 @@ type User struct {
 }
 
 type NotifyUsers struct {
-	UserID         sql.NullInt64
+	UserID         sql.NullString
 	Name           sql.NullString
 	Email          sql.NullString
 	PreferredTime  sql.NullString
