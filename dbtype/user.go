@@ -16,4 +16,5 @@ type NotifyUsers struct {
 	PreferredTime  sql.NullString
 	Surprise       sql.NullString
 	NotificationID sql.NullInt64
+	FCMID          sql.NullString
 }

@@ -9,12 +9,13 @@ import (
 	utils "notifyy.app/backend/utils"
 )
 type UserData struct {
-    ID                    string               `json:"id"`
+    ID                    string              `json:"id"`
     Username              string              `json:"username"`
     FirstName             string              `json:"first_name"`
     LastName              string              `json:"last_name"`
-    ProfileImageURL       string               `json:"profile_image_url"`
-    EmailAddress        string					`json:"email_address"`
+    ProfileImageURL       string              `json:"profile_image_url"`
+    EmailAddress          string			  `json:"email_address"`
+	FCMID				  string              `json:"fcm_id"`
 }
 func ManageUser(c *gin.Context) {
 	db := utils.DBConnection()
@@ -30,11 +31,11 @@ func ManageUser(c *gin.Context) {
 	
 	// Check if the user exists
 	var existingUser types.NotifyUsers
-	err := db.QueryRow("SELECT UserID, NAME, EMAIL, PreferredTime, Surprises, NotificationID FROM NotifyUsers WHERE UserID = ?", user.ID).Scan(&existingUser.UserID, &existingUser.Name, &existingUser.Email, &existingUser.PreferredTime, &existingUser.Surprise, &existingUser.NotificationID)
+	err := db.QueryRow("SELECT UserID, NAME, EMAIL FROM NotifyUsers WHERE UserID = ?", user.ID).Scan(&existingUser.UserID, &existingUser.Name, &existingUser.Email)
 	if err != nil {
 		// If the user does not exist, create a new one
 		if err == sql.ErrNoRows {
-			_, err := db.Exec("INSERT INTO NotifyUsers (userid, name, email) VALUES (?, ?, ?)", user.ID, user.FirstName, user.EmailAddress)
+			_, err := db.Exec("INSERT INTO NotifyUsers (userid, name, email, fcmid) VALUES (?, ?, ?, ?)", user.ID, user.FirstName, user.EmailAddress,user.FCMID)
 			if err != nil {
 				fmt.Printf("Error: %v", err)
 
@@ -57,7 +58,7 @@ func ManageUser(c *gin.Context) {
 	}
 
 	// If the user exists, update their information
-	_, err = db.Exec("UPDATE NotifyUsers SET name = ?, email = ? WHERE userid = ?", user.FirstName, user.EmailAddress, user.ID)
+	_, err = db.Exec("UPDATE NotifyUsers SET name = ?, email = ?,fcmid=? WHERE userid = ?", user.FirstName, user.EmailAddress,user.FCMID, user.ID)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"error": "Failed to update user",

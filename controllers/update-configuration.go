@@ -9,6 +9,7 @@ import (
 
 
 type UpdateBody  struct{
+	ID string `json:"id"`	
 	Alarm string `json:"alarm"`
 	Surprise bool `json:"surprise"`
 }
