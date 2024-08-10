@@ -75,6 +75,7 @@ func main() {
 	})
 	r.POST("/configuration", controllers.UpdateConfiguration)
 	r.POST("/update", controllers.ManageUser)
+	r.POST("/configuration/:slug", controllers.GetConfiguration)
 	// Start the server
 	r.Run(":8080")
 }

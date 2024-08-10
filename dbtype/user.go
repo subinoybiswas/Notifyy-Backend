@@ -10,11 +10,11 @@ type User struct {
 }
 
 type NotifyUsers struct {
-	UserID         sql.NullString
-	Name           sql.NullString
-	Email          sql.NullString
-	PreferredTime  sql.NullString
-	Surprise       sql.NullString
-	NotificationID sql.NullInt64
-	FCMID          sql.NullString
+	UserID         string	
+	Name           string
+	Email          string
+	PreferredTime  string
+	Surprise       int
+	NotificationID string
+	FCMID          string
 }

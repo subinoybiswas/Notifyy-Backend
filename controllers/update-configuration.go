@@ -44,7 +44,7 @@ func UpdateConfiguration(c *gin.Context) {
 		fmt.Printf("Error: %v", err)
 		return
 	}
-	if err:=UpdateDetails("1", requestBody.Alarm,requestBody.Surprise);err!=nil{
+	if err:=UpdateDetails(requestBody.ID, requestBody.Alarm,requestBody.Surprise);err!=nil{
 		c.JSON(500, gin.H{
 			"error": "Internal Server Error",
 		})

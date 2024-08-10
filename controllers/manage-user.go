@@ -28,14 +28,15 @@ func ManageUser(c *gin.Context) {
 		fmt.Printf("Error: %v", err)
 		return
 	}
-	
+	var default_time="20:00:00"
+	var default_surprise="0"
 	// Check if the user exists
 	var existingUser types.NotifyUsers
 	err := db.QueryRow("SELECT UserID, NAME, EMAIL FROM NotifyUsers WHERE UserID = ?", user.ID).Scan(&existingUser.UserID, &existingUser.Name, &existingUser.Email)
 	if err != nil {
 		// If the user does not exist, create a new one
 		if err == sql.ErrNoRows {
-			_, err := db.Exec("INSERT INTO NotifyUsers (userid, name, email, fcmid) VALUES (?, ?, ?, ?)", user.ID, user.FirstName, user.EmailAddress,user.FCMID)
+			_, err := db.Exec("INSERT INTO NotifyUsers (userid, name, email, fcmid, preferredtime,surprises) VALUES (?, ?, ?, ?, ?, ?)", user.ID, user.FirstName, user.EmailAddress,user.FCMID,default_time,default_surprise)
 			if err != nil {
 				fmt.Printf("Error: %v", err)
 
