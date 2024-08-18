@@ -73,6 +73,7 @@ func main() {
 	r.GET("/users", func(c *gin.Context) {
 		queryUsers(db)
 	})
+	r.GET("/notifications", controllers.GetNotifications)
 	r.POST("/configuration", controllers.UpdateConfiguration)
 	r.POST("/update", controllers.ManageUser)
 	r.POST("/configuration/:slug", controllers.GetConfiguration)

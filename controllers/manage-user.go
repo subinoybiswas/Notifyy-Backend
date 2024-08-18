@@ -17,7 +17,7 @@ type UserData struct {
     EmailAddress          string			  `json:"email_address"`
 	FCMID				  string              `json:"fcm_id"`
 }
-func ManageUser(c *gin.Context) {
+func 	ManageUser(c *gin.Context) {
 	db := utils.DBConnection()
 	var user UserData
 
