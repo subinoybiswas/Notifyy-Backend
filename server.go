@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
 	controllers "notifyy.app/backend/controllers"
+	cron "notifyy.app/backend/cron"
 )
 
 type User struct {
@@ -56,7 +58,14 @@ func queryUsers(db *sql.DB) {
 	}
 }
 
+func init() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
+}
+
 func main() {
+
+	go cron.StartCron()
+
 	// Connect to the database
 	url := os.Getenv("DATABASE_URL")
 	db, err := sql.Open("libsql", url)
