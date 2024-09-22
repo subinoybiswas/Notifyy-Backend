@@ -10,7 +10,7 @@ func StartCron() {
 	log.Info("Creating new cron scheduler...")
 	c := cron.New()
 
-	c.AddFunc("*/30 * * * *", func() { helpers.HourlyCron() })
+	c.AddFunc("0 * * * *", func() { helpers.HourlyCron() })
 	c.Start()
 	select {}
 }
