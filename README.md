@@ -71,5 +71,5 @@ Contributions are welcome! If you'd like to add new features, improve existing o
 
 ## Contact
 For questions or feedback, feel free to reach out at:
-*Author*: Subinoy Biswas
-*GitHub*: [subinoybiswas](https://github.com/subinoybiswas)
+- **Author**: Subinoy Biswas
+- **GitHub**: [subinoybiswas](https://github.com/subinoybiswas)
