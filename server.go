@@ -65,7 +65,10 @@ func init() {
 func main() {
 
 	go cron.StartCron()
-
+	// err := adhoc.AddNotifications()
+	// if err!=nil{
+	// 	fmt.Printf("Couldn't add notifications")
+	// }
 	// Connect to the database
 	url := os.Getenv("DATABASE_URL")
 	db, err := sql.Open("libsql", url)
