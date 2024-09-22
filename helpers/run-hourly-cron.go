@@ -16,15 +16,30 @@ import (
 
 type User types.NotifyUsers
 
-func fetchConfiguration() ([]User, error) {
-	location, err := time.LoadLocation("Asia/Kolkata")
+type notification struct {
+	Title      string
+	Message string
+	Checked bool
+}
+
+var location *time.Location
+var timeOnly string
+var timeAfterOneHour string
+
+func init() {
+	var err error
+	location, err = time.LoadLocation("Asia/Kolkata")
 	if err != nil {
 		fmt.Println("Error loading location:", err)
 	}
 
 	currentTime := time.Now().In(location)
-	timeOnly := currentTime.Format("15:04:05")
-	timeAfterOneHour := currentTime.Add(time.Hour).Format("15:04:05")
+	timeOnly = currentTime.Format("15:04:05")
+	timeAfterOneHour = currentTime.Add(time.Hour).Format("15:04:05")
+}
+
+func fetchConfiguration() ([]User, error) {
+
 	fmt.Printf("Current Time: %s, Time After One Hour: %s\n", timeOnly, timeAfterOneHour)
 
 	db := utils.DBConnection()
@@ -56,6 +71,40 @@ func fetchConfiguration() ([]User, error) {
 
 	return users, nil
 }
+
+func fetchNotificationContent() (notification, error) {
+	var currentNotification notification
+	db := utils.DBConnection()
+	defer db.Close()
+	rows, err := db.Query("SELECT title,message,checked FROM notifications WHERE checked = 0 ORDER BY rowid DESC LIMIT 1")
+	if err != nil {
+		return notification{}, err
+	}
+	defer rows.Close()
+	if rows.Next() {
+		err = rows.Scan(&currentNotification.Title, &currentNotification.Message, &currentNotification.Checked)
+		if err != nil {
+			return notification{}, err
+		}
+		return currentNotification, nil
+
+	} else {
+		// No rows were returned
+	}
+	timeOnlyParsed, err := time.Parse("15:04:05", timeOnly)
+	if err != nil {
+		fmt.Println("Error parsing time:", err)
+	}
+
+	if timeOnlyParsed.Hour() >= 23 {
+		_, err := db.Query("UPDATE notifications SET checked = TRUE WHERE checked = FALSE LIMIT 1")
+		if err != nil {
+			fmt.Println("Error updating notifications:", err)
+		}
+	}
+	return notification{}, nil
+
+}
 func sendFCMNotification(tokens []string) {
 	err := godotenv.Load()
 	if err != nil {
@@ -72,10 +121,14 @@ func sendFCMNotification(tokens []string) {
 	}
 
 	registrationTokens := tokens
+	sendNotification, err := fetchNotificationContent()
+	if err != nil {
+		log.Fatal(err)
+	}
 	msg := &messaging.MulticastMessage{
 		Notification: &messaging.Notification{
-			Title: "Price drop",
-			Body:  "5% off all electronics",
+			Title: sendNotification.Title,
+			Body:  sendNotification.Message,
 		},
 		Tokens: registrationTokens,
 	}
