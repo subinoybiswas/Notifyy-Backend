@@ -25,7 +25,7 @@ func FetchNotifications(db *sql.DB) {
    	NOTIFICATIONID, 
   	MESSAGE, 
   	COALESCE(TITLE, '') AS TITLE
-   FROM Notifications`)
+   FROM Notifications WHERE CHECKED=1`)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to execute query: %v\n", err)
 		log.Fatal(err)
