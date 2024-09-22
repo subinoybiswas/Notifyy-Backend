@@ -76,7 +76,7 @@ func fetchNotificationContent() (notification, error) {
 	var currentNotification notification
 	db := utils.DBConnection()
 	defer db.Close()
-	rows, err := db.Query("SELECT title,message,checked FROM notifications WHERE checked = 0 ORDER BY rowid DESC LIMIT 1")
+	rows, err := db.Query("SELECT title,message,checked FROM notifications WHERE checked = 0 LIMIT 1")
 	if err != nil {
 		return notification{}, err
 	}
