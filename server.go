@@ -83,7 +83,13 @@ func main() {
 	r.POST("/configuration", controllers.UpdateConfiguration)
 	r.POST("/update", controllers.ManageUser)
 	r.POST("/configuration/:slug", controllers.GetConfiguration)
-	r.POST("/send", controllers.SendNotification)
+	r.GET("/send", controllers.SendNotification)
+	r.GET("/health", func(c *gin.Context) {
+		fmt.Printf("Health check\n")
+		c.JSON(200, gin.H{
+			"message": "Healthy",
+		})
+	})
 	// Start the server
 	r.Run(":8080")
 }
