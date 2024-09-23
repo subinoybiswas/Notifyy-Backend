@@ -16,6 +16,11 @@ func SendNotification(c *gin.Context) {
 		log.Fatalf("Error loading .env file")
 	}
 	auth := os.Getenv("AUTH_HEADER")
+	if auth == "" {
+		c.JSON(500, gin.H{
+			"error": "Internal Server Error",
+		})
+	}
 	if authHeader == "" && authHeader != auth {
 		c.JSON(401, gin.H{
 			"error": "Invalid Authorization header",
