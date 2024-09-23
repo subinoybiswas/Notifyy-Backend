@@ -1,16 +1,10 @@
 package cron
 
 import (
-	"github.com/robfig/cron"
-	log "github.com/sirupsen/logrus"
 	"notifyy.app/backend/helpers"
 )
 
 func StartCron() {
-	log.Info("Creating new cron scheduler...")
-	c := cron.New()
+	helpers.HourlyCron()
 
-	c.AddFunc("0 * * * *", func() { helpers.HourlyCron() })
-	c.Start()
-	select {}
 }

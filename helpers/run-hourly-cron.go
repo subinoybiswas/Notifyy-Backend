@@ -17,7 +17,8 @@ import (
 type User types.NotifyUsers
 
 type notification struct {
-	Title      string
+	Id      int
+	Title   string
 	Message string
 	Checked bool
 }
@@ -76,33 +77,33 @@ func fetchNotificationContent() (notification, error) {
 	var currentNotification notification
 	db := utils.DBConnection()
 	defer db.Close()
-	rows, err := db.Query("SELECT title,message,checked FROM notifications WHERE checked = 0 LIMIT 1")
+	rows, err := db.Query("SELECT notificationID,title,message,checked FROM notifications WHERE checked = 0 LIMIT 1")
 	if err != nil {
 		return notification{}, err
 	}
 	defer rows.Close()
 	if rows.Next() {
-		err = rows.Scan(&currentNotification.Title, &currentNotification.Message, &currentNotification.Checked)
+		err = rows.Scan(&currentNotification.Id, &currentNotification.Title, &currentNotification.Message, &currentNotification.Checked)
 		if err != nil {
 			return notification{}, err
 		}
+		timeOnlyParsed, err := time.Parse("15:04:05", timeOnly)
+		if err != nil {
+			fmt.Println("Error parsing time:", err)
+		}
+		fmt.Printf("Current Time: %d, Time After One Hour: %s\n", timeOnlyParsed.Hour(), timeAfterOneHour)
+		if timeOnlyParsed.Hour() >= 23 {
+			_, err := db.Query("UPDATE notifications SET checked = 1 WHERE NotificationID= ? ", currentNotification.Id)
+			if err != nil {
+				fmt.Println("Error updating notifications:", err)
+			}
+		}
 		return currentNotification, nil
 
-	} else {
-		// No rows were returned
 	}
-	timeOnlyParsed, err := time.Parse("15:04:05", timeOnly)
-	if err != nil {
-		fmt.Println("Error parsing time:", err)
-	}
+	return notification{
 
-	if timeOnlyParsed.Hour() >= 23 {
-		_, err := db.Query("UPDATE notifications SET checked = TRUE WHERE checked = FALSE LIMIT 1")
-		if err != nil {
-			fmt.Println("Error updating notifications:", err)
-		}
-	}
-	return notification{}, nil
+	}, nil
 
 }
 func sendFCMNotification(tokens []string) {
@@ -151,6 +152,9 @@ func HourlyCron() {
 	for _, user := range users {
 		tokens = append(tokens, user.FCMID)
 		fmt.Printf(user.FCMID)
+	}
+	if len(tokens) == 0 {
+		return
 	}
 	sendFCMNotification(tokens)
 }

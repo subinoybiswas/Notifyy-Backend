@@ -5,12 +5,10 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"runtime"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
 	controllers "notifyy.app/backend/controllers"
-	cron "notifyy.app/backend/cron"
 )
 
 type User struct {
@@ -58,13 +56,9 @@ func queryUsers(db *sql.DB) {
 	}
 }
 
-func init() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-}
-
 func main() {
 
-	go cron.StartCron()
+	// cron.StartCron()
 	// err := adhoc.AddNotifications()
 	// if err!=nil{
 	// 	fmt.Printf("Couldn't add notifications")
@@ -89,6 +83,7 @@ func main() {
 	r.POST("/configuration", controllers.UpdateConfiguration)
 	r.POST("/update", controllers.ManageUser)
 	r.POST("/configuration/:slug", controllers.GetConfiguration)
+	r.POST("/send", controllers.SendNotification)
 	// Start the server
 	r.Run(":8080")
 }
