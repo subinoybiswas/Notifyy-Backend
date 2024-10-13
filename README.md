@@ -2,6 +2,8 @@
 
 The backend for Notifyy is built using Go with the Gin framework, leveraging Turso as the database and Firebase for sending notifications. A cron job runs every hour to determine which users should receive notifications, ensuring timely and relevant messages.
 
+![Notifyy Backend](Notifyy-Backend.png)
+
 ## Features
 
 - **Go-Powered Backend**: Efficient and fast backend developed with Go and the Gin framework, ensuring high performance and low latency.
